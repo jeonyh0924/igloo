@@ -22,11 +22,14 @@ STATICFILES_DIRS = [
     os.path.join(ROOT_DIR, '.static/admin'),
 ]
 
-
 # Auth
-# AUTH_USER_MODEL = 'members.User'
+AUTH_USER_MODEL = 'members.Users'
 
 INSTALLED_APPS = [
+    #apps
+    'members',
+    'posts.apps.PostsConfig',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -80,7 +83,6 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
