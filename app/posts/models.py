@@ -18,6 +18,9 @@ class Posts(models.Model):
     content = models.TextField(
         '작성 글', max_length=500
     )
+    pyeong = models.CharField(
+        '평 수', max_length=20
+    )
     created_at = models.DateTimeField(
         '생성 날짜', auto_now_add=True,
     )
