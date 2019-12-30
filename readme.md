@@ -13,6 +13,11 @@ Secrets
 
 ```.secrets/base.json```
 
+pycharm setting
+
+``` cmd + , language& frameworks -> selech Django, enable django support, Django projects root -> manage.py folder, settings-> dev settings.py``` ex> igloo settings 
+
+
 ## 서비스 소개
 이글루 앱을 위한 back end 
 
@@ -70,3 +75,5 @@ EC2 와 비교했을 때, EC2 는 이벤트가 있으나 없으나 모든 시간
 정말 사용한 리소스에 대한 값만 요구한다.
 
 > lambda가 free tier 범위가 꽤 커보이고 초당 0.000몇 달러여서 저가로 보이지만, 트래픽 많아지면 그냥 Beanstalk, ECS같은 프로비저닝된 컴퓨팅 엔진을 쓰는 것이 비용적으로 낫다는 의견도 알게 되었습니다. 
+
+
