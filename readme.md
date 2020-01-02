@@ -124,14 +124,14 @@ class Manufacturer(models.Model):
 class Car(models.Model):
     manufacturer = models.ForeignKey(Manufacturer, on_delete=models.CASCADE)
     # ...
+"""
+car는 manufacturer에 외래키를 걸어 하나의 제조사는 다수의 차를 가지며,
+Car의 인스턴스는 car.manufacturer를 찍으면 바로 외래키로 제조사에 접근이 가능
+제조사는 속성으로 외래키를 가지고 있지 않으므로 일반적인 ORM으로는 참조가 불가능하다
+이는 related_query_name으로 해결이 가능. 
+manufacturer.objects.filter(car__name__contains='k')
+"""
 ```
-
-> car는 manufacturer에 외래키를 걸어 하나의 제조사는 다수의 차를 가지며,
-> Car의 인스턴스는 car.manufacturer를 찍으면 바로 외래키로 제조사에 접근이 가능
-> 제조사는 속성으로 외래키를 가지고 있지 않으므로 일반적인 ORM으로는 참조가 불가능하다
-> 이는 related_query_name으로 해결이 가능. 
-> manufacturer.objects.filter(car__name__contains='k')
-
 
 ## django class meta options
 [meta options docs](https://docs.djangoproject.com/en/3.0/ref/models/options/)
