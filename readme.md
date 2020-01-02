@@ -77,3 +77,64 @@ EC2 와 비교했을 때, EC2 는 이벤트가 있으나 없으나 모든 시간
 > lambda가 free tier 범위가 꽤 커보이고 초당 0.000몇 달러여서 저가로 보이지만, 트래픽 많아지면 그냥 Beanstalk, ECS같은 프로비저닝된 컴퓨팅 엔진을 쓰는 것이 비용적으로 낫다는 의견도 알게 되었습니다. 
 
 
+### 메모장
+
+[도커, 파이참 개발환경 셋업](https://mingrammer.com/setup-the-python-development-environment-with-pycharm-and-docker/)
+
+[다중 이미지 업로드](https://stackoverflow.com/questions/34006994/how-to-upload-multiple-images-to-a-blog-post-in-django)
+
+
+### MTM
+- Relation table
+- related_name : 특정 인스턴스
+	- u1.from_user_relations.all() -> u1이 from user
+- realated_query_name : 필터 조건 objects manager (filter)
+
+```python
+# query
+
+
+# Relation table에 접근하면서, 필터의 도입부 query_name(to_user_relation)으로 filter를 걸게 되면, 해당하는 속성의 값들이 추출된다.  
+# 다대 다 관계에서 만들어진 테이블의 경우 쿼리에서 추출되는 값이 헷갈리는 부분이 있어서 정리합니다.
+# 다른 관계에서는 너무 당연한 말.
+# to_user_relation을 기준으로 from_user가 self이며(요청을 보낸 유저),
+# to_user_relation을 기준으로 relation_type이 'f'인 인스턴스를 꺼내옴
+User.objects.filter(
+	to_user_relation_from_user=self,
+	to_user_relation_relation_type='f'
+	)
+
+# 이런 멍청한 쿼리가 나올 수 있다는 말.
+User.objects.filter(
+	from_user_relation_from_user=self,
+	from_user_relation_relation_type='f'
+	)
+
+
+```
+
+### 역방향 접근
+```python
+
+
+class Manufacturer(models.Model):
+    # ...
+    pass
+
+class Car(models.Model):
+    manufacturer = models.ForeignKey(Manufacturer, on_delete=models.CASCADE)
+    # ...
+```
+
+> car는 manufacturer에 외래키를 걸어 하나의 제조사는 다수의 차를 가지며,
+> Car의 인스턴스는 car.manufacturer를 찍으면 바로 외래키로 제조사에 접근이 가능
+> 제조사는 속성으로 외래키를 가지고 있지 않으므로 일반적인 ORM으로는 참조가 불가능하다
+> 이는 related_query_name으로 해결이 가능. 
+> manufacturer.objects.filter(car__name__contains='k')
+
+
+## django class meta options
+[meta options docs](https://docs.djangoproject.com/en/3.0/ref/models/options/)
+
+## modelling 참고 문서
+https://lhy.kr/django-introduction-to-models
