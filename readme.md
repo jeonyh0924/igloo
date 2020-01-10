@@ -26,7 +26,7 @@ ECS 와 Docker 활용, Celery를 사용한 비동기 처리 예정
 
 ### ERD
 
-추후 업로드 예정
+![image1](./readmeImage/image1.png)
 
 ### flow chart
 

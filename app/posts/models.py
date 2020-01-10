@@ -8,7 +8,7 @@ def get_image_filename(instance, filename):
 
 
 def get_main_image_filename(instance, filename):
-    a = f'post_images/{instance.post.title}_main.svg'
+    a = f'post_images/{instance.title}_main.svg'
 
 
 # Create your models here.
