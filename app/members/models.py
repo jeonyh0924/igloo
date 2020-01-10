@@ -17,7 +17,7 @@ class Users(AbstractUser):
         '소개', blank=True,
     )
     user_type = models.CharField(
-        '유저 타입', choices=UserChoice, max_length=100,
+        '유저 타입', choices=UserChoice, max_length=100, null=True, blank=True,
     )
 
     relation_users = models.ManyToManyField(
@@ -27,6 +27,8 @@ class Users(AbstractUser):
         related_name='+',
         # symmetrical // https://stackoverflow.com/questions/36852324/in-django-what-does-symmetrical-true-do
         symmetrical=False,
+        blank=True,
+        null=True,
     )
 
     @property

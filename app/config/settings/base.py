@@ -26,7 +26,7 @@ STATICFILES_DIRS = [
 AUTH_USER_MODEL = 'members.Users'
 
 INSTALLED_APPS = [
-    #apps
+    # apps
     'members',
     'posts.apps.PostsConfig',
 
@@ -36,7 +36,26 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # third part package
+    'django_extensions',
+    'rest_framework',
+    'rest_framework.authtoken',
+    # django 는 밑에서부터 위로 컴파일
+    # 'drf_yasg',
+
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+    'DEFAULT_PARSER_CLASSES': (
+        'rest_framework.parsers.FormParser',
+        'rest_framework.parsers.MultiPartParser',
+    ),
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

@@ -10,12 +10,14 @@ ALLOWED_HOSTS = [
     'localhost',
 ]
 
+
 STATICFILES_DIRS = [
     STATIC_DIR,
 ]
+secrets = json.load(open(os.path.join(SECRET_DIR, 'base.json')))
+SECRET_KEY = secrets['SECRET_KEY']
 
 WSGI_APPLICATION = 'config.wsgi.dev.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases

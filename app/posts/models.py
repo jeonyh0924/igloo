@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 
 
@@ -6,10 +7,14 @@ def get_image_filename(instance, filename):
     return a
 
 
+def get_main_image_filename(instance, filename):
+    a = f'post_images/{instance.post.title}_main.svg'
+
+
 # Create your models here.
 class Posts(models.Model):
     user = models.ForeignKey(
-        'members.Users',
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
     )
     title = models.TextField(
@@ -17,6 +22,12 @@ class Posts(models.Model):
     )
     content = models.TextField(
         '작성 글', max_length=500
+    )
+    main_image = models.ImageField(
+        upload_to=get_main_image_filename,
+        blank=True,
+        null=True,
+        verbose_name='메인 이미지',
     )
     pyeong = models.CharField(
         '평 수', max_length=20
@@ -38,6 +49,9 @@ class Posts(models.Model):
     colors = models.ManyToManyField(
         'posts.Colors',
     )
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
 
 
 class Comments(models.Model):
@@ -66,6 +80,10 @@ class Comments(models.Model):
     class Meta:
         verbose_name = '댓글'
         verbose_name_plural = '댓글 목록'
+
+    def save(self, *args, **kwargs):
+        # 여기서 이미지 처리를 하게 될 듯
+        super().save(*args, **kwargs)
 
 
 class Postlikes(models.Model):
@@ -125,7 +143,7 @@ class Colors(models.Model):
     )
 
 
-class Images(models.Model):
+class postImages(models.Model):
     post = models.ForeignKey(
         Posts,
         on_delete=models.CASCADE,
