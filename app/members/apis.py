@@ -60,3 +60,17 @@ class UserProfileView(APIView):
 
     def get(self, request):
         return Response(UserSerializer(request.user).data)
+
+
+class LogoutView(APIView):
+    permission_classes = (
+        permissions.IsAuthenticated,
+    )
+    """
+    GET 요청으로 로그아웃 요청을 받는다
+    해당 유저(request.user)가 가진 auth_token(Token object의 related_name)을 삭제
+    """
+
+    def delete(self, request):
+        request.user.auth_token.delete()
+        return Response(status=status.HTTP_200_OK)
