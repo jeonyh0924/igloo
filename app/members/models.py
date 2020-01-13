@@ -47,8 +47,8 @@ class Users(AbstractUser):
         내가 팔로우를 하는 사람들
         """
         return Users.objects.filter(
-            to_user_relation__from_user=self,
-            to_user_retion__relation_type='f'
+            to_users_relation__from_user=self,
+            to_users_relation__related_type='f'
         )
 
     @property
@@ -59,7 +59,7 @@ class Users(AbstractUser):
         """
         return Users.objects.filter(
             to_user_relations__from_user=self,
-            to_user_relations__relation_type='b'
+            to_user_relations__related_type='b'
         )
 
     @property
@@ -120,7 +120,8 @@ class Relations(models.Model):
 
     class Meta:
         unique_together = (
-            ('from_user', 'to_user')
+            ('from_user', 'to_user'),
+            ('to_user', 'from_user'),
         )
 
     # django meta options // https://docs.djangoproject.com/en/3.0/ref/models/options/

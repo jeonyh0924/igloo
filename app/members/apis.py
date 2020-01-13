@@ -74,3 +74,27 @@ class LogoutView(APIView):
     def delete(self, request):
         request.user.auth_token.delete()
         return Response(status=status.HTTP_200_OK)
+
+
+class FollowerView(APIView):
+    permission_classes = (
+        permissions.IsAuthenticated,
+    )
+
+    def get(self, request):
+        user = request._user
+        follower_user = user.follower
+        serializer = CheckUniqueIDSerializer(follower_user, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class FollowingView(APIView):
+    permission_classes = (
+        permissions.IsAuthenticated,
+    )
+
+    def get(self, request):
+        user = request._user
+        following_user = user.following
+        serializer = CheckUniqueIDSerializer(following_user, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
