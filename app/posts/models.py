@@ -9,6 +9,7 @@ def get_image_filename(instance, filename):
 
 def get_main_image_filename(instance, filename):
     a = f'post_images/{instance.title}_main.svg'
+    return a
 
 
 # Create your models here.
@@ -44,14 +45,18 @@ class Posts(models.Model):
         through='Postlikes',
         related_name='like_posts',
         related_query_name='like_post',
+        blank=True,
+        null=True,
     )
 
     colors = models.ManyToManyField(
         'posts.Colors',
+        blank=True,
+        null=True,
     )
 
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    #     super().save(*args, **kwargs)
 
 
 class Comments(models.Model):
@@ -143,14 +148,17 @@ class Colors(models.Model):
     )
 
 
-class postImages(models.Model):
+class PostImages(models.Model):
     post = models.ForeignKey(
         Posts,
         on_delete=models.CASCADE,
     )
     image = models.ImageField(
         upload_to=get_image_filename,
-        verbose_name='image',
+        verbose_name='다중 이미지',
+    )
+    image_comment = models.TextField(
+        '사진 설명', max_length=200, blank=True, null=True,
     )
     # 이미지 추가 스택오버플로우 정보
     # https://stackoverflow.com/questions/34006994/how-to-upload-multiple-images-to-a-blog-post-in-django

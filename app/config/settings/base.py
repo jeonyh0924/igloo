@@ -15,6 +15,8 @@ SECRET_KEY = secrets['SECRET_KEY']
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(ROOT_DIR, ".media")
 
 STATIC_URL = '/static/'
 
