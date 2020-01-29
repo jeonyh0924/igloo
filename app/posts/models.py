@@ -42,7 +42,7 @@ class Posts(models.Model):
 
     like_users = models.ManyToManyField(
         'members.Users',
-        through='Postlikes',
+        through='PostLike',
         related_name='like_posts',
         related_query_name='like_post',
         blank=True,
@@ -91,7 +91,7 @@ class Comments(models.Model):
         super().save(*args, **kwargs)
 
 
-class Postlikes(models.Model):
+class PostLike(models.Model):
     post = models.ForeignKey(
         Posts,
         on_delete=models.CASCADE,

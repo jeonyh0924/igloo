@@ -1,7 +1,21 @@
 from rest_framework import serializers
+from .models import Posts, PostImages, PostLike
+from django.contrib.auth import get_user_model
 
-from members.serializers import UserSerializer
-from .models import Posts, PostImages
+User = get_user_model()
+
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = (
+            'pk',
+            'username',
+            'img_profile',
+            'introduce',
+            'user_type',
+
+        )
 
 
 class PostImageSerializer(serializers.ModelSerializer):
@@ -13,7 +27,7 @@ class PostImageSerializer(serializers.ModelSerializer):
 
 
 class PostSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)
+    user = UserProfileSerializer(read_only=True)
     images = PostImageSerializer(source='postimages_set', many=True, read_only=True)
 
     class Meta:
@@ -39,3 +53,25 @@ class PostSerializer(serializers.ModelSerializer):
                 image=image_data,
             )
         return post
+
+
+class PostLikeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PostLike
+        fields = (
+            'post',
+            'user',
+        )
+        read_only_fields = (
+            'user',
+        )
+
+
+class PostLikeListSerializer(serializers.ModelSerializer):
+    posts = PostSerializer(source='post')
+
+    class Meta:
+        model = PostLike
+        fields = (
+            'posts',
+        )

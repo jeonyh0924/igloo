@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     # django 는 밑에서부터 위로 컴파일
-    # 'drf_yasg',
+    # 'drf_yasg'
 
 ]
 
