@@ -5,9 +5,10 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from members.models import Users
 from .models import Posts, PostLike
 from .permissions import IsOwnerOrReadOnly
-from .serializer import PostSerializer, PostLikeSerializer
+from .serializer import PostSerializer, PostLikeSerializer, CommentSerializer
 
 
 class PostsView(generics.ListCreateAPIView):
@@ -57,3 +58,24 @@ class PostLikeCreate(APIView):
         post_like.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+
+class CommentView(APIView):
+    permission_classes = (
+        permissions.IsAuthenticated,
+    )
+
+    def post(self, request, post_pk):
+        post = get_object_or_404(Posts, pk=post_pk)
+        serializer = CommentSerializer(
+            data={**request.data, 'post': post_pk, 'author': request._user.pk, 'content':request.POST.get('content')}
+        )
+        if serializer.is_valid():
+            serializer.save(post=post, author=request._user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, post_pk):
+        pass
+
+    def put(self, request, post_pk):
+        pass
