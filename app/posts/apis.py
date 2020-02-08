@@ -1,22 +1,30 @@
 # Create your views here.
+import mixins as mixins
 from rest_framework import generics, permissions, status
 from rest_framework.exceptions import NotAuthenticated, APIException
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
+from rest_framework import mixins
 from members.models import Users
-from .models import Posts, PostLike
-from .permissions import IsOwnerOrReadOnly
-from .serializer import PostSerializer, PostLikeSerializer, CommentSerializer
+from .models import Posts, PostLike, Comments
+from .permissions import IsOwnerOrReadOnly, IsOwnerOrReadOnlyComment
+from .serializer import PostSerializer, PostLikeSerializer, CommentSerializer, PostListSerializer
 
 
-class PostsView(generics.ListCreateAPIView):
+class PostsCreateView(generics.ListCreateAPIView):
     queryset = Posts.objects.all()
     serializer_class = PostSerializer
     permission_classes = (
         permissions.IsAuthenticatedOrReadOnly,
     )
+
+
+class PostListView(APIView):
+    def get(self, request):
+        posts = Posts.objects.all()
+        serializer = PostListSerializer(posts, many=True)
+        return Response(serializer.data)
 
 
 class PostDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -67,15 +75,32 @@ class CommentView(APIView):
     def post(self, request, post_pk):
         post = get_object_or_404(Posts, pk=post_pk)
         serializer = CommentSerializer(
-            data={**request.data, 'post': post_pk, 'author': request._user.pk, 'content':request.POST.get('content')}
+            data={**request.data, 'post': post_pk, 'author': request._user.pk, 'content': request.POST.get('content')}
         )
         if serializer.is_valid():
             serializer.save(post=post, author=request._user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, post_pk):
-        pass
 
-    def put(self, request, post_pk):
-        pass
+class CommentUpdateDelete(mixins.UpdateModelMixin, mixins.DestroyModelMixin, generics.GenericAPIView):
+    permission_classes = (
+        permissions.IsAuthenticated,
+        IsOwnerOrReadOnlyComment,
+    )
+    queryset = Comments.objects.all()
+    serializer_class = CommentSerializer
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+
+# def delete(self, request, comment_pk):
+#     comment = get_object_or_404(Comments, pk=comment_pk)
+#     comment.delete()
+#     return Response(status=status.HTTP_204_NO_CONTENT)

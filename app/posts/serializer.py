@@ -35,7 +35,8 @@ class PostImageSerializer(serializers.ModelSerializer):
 class PostSerializer(serializers.ModelSerializer):
     user = UserProfileSerializer(read_only=True)
     images = PostImageSerializer(source='postimages_set', many=True, read_only=True)
-    comment = CommentSerializer(source='comment_set', many=True)
+
+    # comment = CommentSerializer(source='comment_set', many=True)
 
     class Meta:
         model = Posts
@@ -47,7 +48,7 @@ class PostSerializer(serializers.ModelSerializer):
             'main_image',
             'pyeong',
             'images',
-            'comment',
+            # 'comment',
         )
 
     def create(self, validated_data):
@@ -61,6 +62,15 @@ class PostSerializer(serializers.ModelSerializer):
                 image=image_data,
             )
         return post
+
+
+class PostListSerializer(PostSerializer):
+    comment = CommentSerializer(source='comment_set', many=True)
+
+    class Meta(PostSerializer.Meta):
+        fields = PostSerializer.Meta.fields + (
+            'comment',
+        )
 
 
 class PostLikeSerializer(serializers.ModelSerializer):

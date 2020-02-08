@@ -57,6 +57,9 @@ class Posts(models.Model):
 
     # def save(self, *args, **kwargs):
     #     super().save(*args, **kwargs)
+    class Meta:
+        verbose_name = '게시글'
+        verbose_name_plural = '게시글 목록'
 
 
 class Comments(models.Model):
@@ -68,7 +71,7 @@ class Comments(models.Model):
         related_query_name='comments',
     )
     author = models.ForeignKey(
-        'members.Users',
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
     )
     content = models.TextField(

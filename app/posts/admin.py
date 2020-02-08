@@ -4,6 +4,7 @@ from .models import *
 
 class PostAdmin(admin.ModelAdmin):
     list_display = (
+        'pk',
         'user',
         'title',
     )
@@ -11,9 +12,10 @@ class PostAdmin(admin.ModelAdmin):
 
 class CommentAdmin(admin.ModelAdmin):
     list_display = (
+        'pk',
         'post',
         'author',
-
+        'content',
     )
 
 
