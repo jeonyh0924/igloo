@@ -9,4 +9,5 @@ urlpatterns_api_posts = [
     path('postLikeCreate/<int:post_pk>/', apis.PostLikeCreate.as_view()),
     path('commentCreate/<int:post_pk>/', apis.CommentView.as_view()),
     path('commentUpdateDelete/<int:pk>/', apis.CommentUpdateDelete.as_view()),
+    path('postFiltering/', apis.PostFiltering.as_view()),
 ]

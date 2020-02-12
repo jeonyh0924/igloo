@@ -1,5 +1,7 @@
 from rest_framework import serializers
-from .models import Posts, PostImages, PostLike, Comments
+from rest_framework.relations import StringRelatedField, PrimaryKeyRelatedField
+
+from .models import Posts, PostImages, PostLike, Comments, Pyeong, Colors, HousingTypes, Styles
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
@@ -24,6 +26,38 @@ class CommentSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class PyeongSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Pyeong
+        fields = (
+            'type',
+        )
+
+
+class ColorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Colors
+        fields = (
+            'type',
+        )
+
+
+class HousingTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HousingTypes
+        fields = (
+            'type',
+        )
+
+
+class StyleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Styles
+        fields = (
+            'type',
+        )
+
+
 class PostImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = PostImages
@@ -35,8 +69,10 @@ class PostImageSerializer(serializers.ModelSerializer):
 class PostSerializer(serializers.ModelSerializer):
     user = UserProfileSerializer(read_only=True)
     images = PostImageSerializer(source='postimages_set', many=True, read_only=True)
-
-    # comment = CommentSerializer(source='comment_set', many=True)
+    pyeong = StringRelatedField(many=True, read_only=True)
+    colors = StringRelatedField(many=True, read_only=True)
+    housingtype = StringRelatedField(many=True, read_only=True, )
+    style = StringRelatedField(many=True, read_only=True, )
 
     class Meta:
         model = Posts
@@ -46,9 +82,12 @@ class PostSerializer(serializers.ModelSerializer):
             'title',
             'content',
             'main_image',
-            'pyeong',
             'images',
-            # 'comment',
+            'pyeong',
+            'colors',
+            'housingtype',
+            'style',
+
         )
 
     def create(self, validated_data):
@@ -66,9 +105,17 @@ class PostSerializer(serializers.ModelSerializer):
 
 class PostListSerializer(PostSerializer):
     comment = CommentSerializer(source='comment_set', many=True)
+    pyeong = PyeongSerializer(many=True, allow_null=True, read_only=True)
+    colors = ColorSerializer(many=True, read_only=True, allow_null=True)
+    housingtype = HousingTypeSerializer(many=True, read_only=True)
+    style = StyleSerializer(many=True, read_only=True)
 
     class Meta(PostSerializer.Meta):
         fields = PostSerializer.Meta.fields + (
+            'pyeong',
+            'colors',
+            'housingtype',
+            'style',
             'comment',
         )
 
@@ -86,7 +133,7 @@ class PostLikeSerializer(serializers.ModelSerializer):
 
 
 class PostLikeListSerializer(serializers.ModelSerializer):
-    posts = PostSerializer(source='post')
+    posts = PostListSerializer(source='post')
 
     class Meta:
         model = PostLike

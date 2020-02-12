@@ -2,7 +2,7 @@ from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-from posts.serializer import PostImageSerializer, PostSerializer
+from posts.serializer import PostImageSerializer, PostSerializer, PostListSerializer
 
 User = get_user_model()
 
@@ -70,7 +70,7 @@ class CheckUniqueIDSerializer(serializers.ModelSerializer):
 
 
 class UserPostsSerializer(CheckUniqueIDSerializer):
-    posts = PostSerializer(source='posts_set', many=True, read_only=True)
+    posts = PostListSerializer(source='posts_set', many=True, read_only=True)
 
     class Meta(CheckUniqueIDSerializer.Meta):
         fields = CheckUniqueIDSerializer.Meta.fields + (

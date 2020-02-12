@@ -1,13 +1,11 @@
-# Create your views here.
-import mixins as mixins
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, permissions, status
 from rest_framework.exceptions import NotAuthenticated, APIException
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import mixins
-from members.models import Users
-from .models import Posts, PostLike, Comments
+from .models import Posts, PostLike, Comments, Colors, Pyeong
 from .permissions import IsOwnerOrReadOnly, IsOwnerOrReadOnlyComment
 from .serializer import PostSerializer, PostLikeSerializer, CommentSerializer, PostListSerializer
 
@@ -29,7 +27,7 @@ class PostListView(APIView):
 
 class PostDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Posts.objects.all()
-    serializer_class = PostSerializer
+    serializer_class = PostListSerializer
     permission_classes = (
         permissions.IsAuthenticatedOrReadOnly,
         IsOwnerOrReadOnly,
@@ -100,7 +98,23 @@ class CommentUpdateDelete(mixins.UpdateModelMixin, mixins.DestroyModelMixin, gen
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
 
-# def delete(self, request, comment_pk):
-#     comment = get_object_or_404(Comments, pk=comment_pk)
-#     comment.delete()
-#     return Response(status=status.HTTP_204_NO_CONTENT)
+
+class PostFiltering(generics.ListAPIView):
+    serializer_class = PostSerializer
+
+    def get_queryset(self):
+        colors = self.request.POST['colors']
+        if colors is '':
+            colors = Colors.objects.all()
+        pyeong = self.request.POST['pyeong']
+        if pyeong is None:
+            pyeong = Pyeong.objects.all()
+        housingtype = self.request.POST['housingtype']
+        if housingtype is None:
+            housingtype = Pyeong.objects.all()
+        style = self.request.POST['style']
+        return Posts.objects.filter(colors=colors,
+                                    pyeong=pyeong,
+                                    housingtype=housingtype,
+                                    style=style
+                                    )

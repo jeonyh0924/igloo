@@ -30,8 +30,10 @@ class Posts(models.Model):
         null=True,
         verbose_name='메인 이미지',
     )
-    pyeong = models.CharField(
-        '평 수', max_length=20
+    pyeong = models.ManyToManyField(
+        'Pyeong',
+        blank=True,
+        null=True,
     )
     created_at = models.DateTimeField(
         '생성 날짜', auto_now_add=True,
@@ -54,9 +56,24 @@ class Posts(models.Model):
         blank=True,
         null=True,
     )
+    housingtype = models.ManyToManyField(
+        'HousingTypes',
+        blank=True,
+        null=True,
+    )
+    style = models.ManyToManyField(
+        'Styles',
+        blank=True,
+        null=True,
+    )
 
-    # def save(self, *args, **kwargs):
-    #     super().save(*args, **kwargs)
+    @staticmethod
+    def initial_setting():
+        Pyeong.make_pyeng()
+        Colors.make_color()
+        HousingTypes.make_housing_type()
+        Styles.make_style()
+
     class Meta:
         verbose_name = '게시글'
         verbose_name_plural = '게시글 목록'
@@ -122,33 +139,56 @@ class PostLike(models.Model):
         )
 
 
+class Pyeong(models.Model):
+    type = models.CharField(
+        '평 수',
+        max_length=20,
+    )
+
+    @staticmethod
+    def make_pyeng():
+        index_list = ['1-7', '8-15', '16-25', '그 이상']
+        for i in range((len(index_list))):
+            Pyeong.objects.create(type=index_list[i])
+
+
 class HousingTypes(models.Model):
-    type = models.TextField(
+    type = models.CharField(
         '주거 환경',
         max_length=20,
     )
-    post = models.ForeignKey(
-        Posts,
-        on_delete=models.CASCADE,
-    )
+
+    @staticmethod
+    def make_housing_type():
+        index_list = ['빌라', '아파트', '오피스텔', '원룸', '투쓰리룸', '복층']
+        for i in range(len(index_list)):
+            HousingTypes.objects.create(type=index_list[i])
 
 
 class Styles(models.Model):
-    type = models.TextField(
+    type = models.CharField(
         '디자인 스타일',
         max_length=10,
     )
-    post = models.ForeignKey(
-        Posts,
-        on_delete=models.CASCADE,
-    )
+
+    @staticmethod
+    def make_style():
+        index_list = ['모던', '미니멀리즘', '한국', '스칸다나비아', '인더스트리얼', '프로방스', '로맨틱', '클래식', '엔틱']
+        for i in range(len(index_list)):
+            Styles.objects.create(type=index_list[i])
 
 
 class Colors(models.Model):
-    type = models.TextField(
+    type = models.CharField(
         '색상',
         max_length=10
     )
+
+    @staticmethod
+    def make_color():
+        index_list = ['빨강', '주황', '노랑', '초록', '파랑', '남색', '보라색', '검정', '흰색', '회색']
+        for i in range(len(index_list)):
+            Colors.objects.create(type=index_list[i])
 
 
 class PostImages(models.Model):
