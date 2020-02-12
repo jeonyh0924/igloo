@@ -4,6 +4,8 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import mixins
+
+from app.posts.filters import PostFilter
 from .models import Posts, PostLike, Comments, Colors, Pyeong
 from .permissions import IsOwnerOrReadOnly, IsOwnerOrReadOnlyComment
 from .serializer import PostSerializer, PostLikeSerializer, CommentSerializer, PostListSerializer
@@ -12,6 +14,7 @@ from .serializer import PostSerializer, PostLikeSerializer, CommentSerializer, P
 class PostListCreateAPIView(generics.ListCreateAPIView):
     queryset = Posts.objects.all()
     serializer_class = PostSerializer
+    filter_class = PostFilter
     permission_classes = (
         permissions.IsAuthenticatedOrReadOnly,
     )
