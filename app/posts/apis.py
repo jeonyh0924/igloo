@@ -1,4 +1,3 @@
-from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics, permissions, status
 from rest_framework.exceptions import NotAuthenticated, APIException
 from rest_framework.generics import get_object_or_404
@@ -10,19 +9,12 @@ from .permissions import IsOwnerOrReadOnly, IsOwnerOrReadOnlyComment
 from .serializer import PostSerializer, PostLikeSerializer, CommentSerializer, PostListSerializer
 
 
-class PostsCreateView(generics.ListCreateAPIView):
+class PostListCreateAPIView(generics.ListCreateAPIView):
     queryset = Posts.objects.all()
     serializer_class = PostSerializer
     permission_classes = (
         permissions.IsAuthenticatedOrReadOnly,
     )
-
-
-class PostListView(APIView):
-    def get(self, request):
-        posts = Posts.objects.all()
-        serializer = PostListSerializer(posts, many=True)
-        return Response(serializer.data)
 
 
 class PostDetail(generics.RetrieveUpdateDestroyAPIView):
