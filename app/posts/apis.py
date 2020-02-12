@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import mixins
 
-from app.posts.filters import PostFilter
+from posts.filters import PostFilter
 from .models import Posts, PostLike, Comments, Colors, Pyeong
 from .permissions import IsOwnerOrReadOnly, IsOwnerOrReadOnlyComment
 from .serializer import PostSerializer, PostLikeSerializer, CommentSerializer, PostListSerializer

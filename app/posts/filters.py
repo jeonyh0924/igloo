@@ -1,7 +1,7 @@
 from django.db.models import Q
 from django_filters import rest_framework as filters
 
-from app.posts.models import Posts
+from posts.models import Posts
 
 
 class PostFilter(filters.FilterSet):
