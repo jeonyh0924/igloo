@@ -1,6 +1,5 @@
 from rest_framework import serializers
-from rest_framework.relations import StringRelatedField, PrimaryKeyRelatedField
-
+from rest_framework.relations import StringRelatedField
 from .models import Posts, PostImages, PostLike, Comments, Pyeong, Colors, HousingTypes, Styles
 from django.contrib.auth import get_user_model
 
@@ -23,7 +22,12 @@ class UserProfileSerializer(serializers.ModelSerializer):
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comments
-        fields = '__all__'
+        fields = (
+            'author',
+            'content',
+            'created_at',
+            'updated_at',
+        )
 
 
 class PyeongSerializer(serializers.ModelSerializer):
@@ -125,9 +129,6 @@ class PostLikeSerializer(serializers.ModelSerializer):
         model = PostLike
         fields = (
             'post',
-            'user',
-        )
-        read_only_fields = (
             'user',
         )
 

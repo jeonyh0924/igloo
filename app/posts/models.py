@@ -14,6 +14,12 @@ def get_main_image_filename(instance, filename):
 
 # Create your models here.
 class Posts(models.Model):
+    PYEONG_CHOICE_FIELD = (
+        ('1-7', '1-7평'),
+        ('8-15', '8-15평'),
+        ('16-25', '16-25평'),
+        ('26-', '그 이상'),
+    )
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -66,6 +72,7 @@ class Posts(models.Model):
         blank=True,
         null=True,
     )
+    postPyeong = models.CharField(max_length=10, choices=PYEONG_CHOICE_FIELD)
 
     @staticmethod
     def initial_setting():
@@ -77,6 +84,9 @@ class Posts(models.Model):
     class Meta:
         verbose_name = '게시글'
         verbose_name_plural = '게시글 목록'
+
+    def __str__(self):
+        return '%s : %s' % (self.pk, self.title)
 
 
 class Comments(models.Model):
@@ -151,6 +161,9 @@ class Pyeong(models.Model):
         for i in range((len(index_list))):
             Pyeong.objects.create(type=index_list[i])
 
+    def __str__(self):
+        return '%s : %s' % (self.pk, self.type)
+
 
 class HousingTypes(models.Model):
     type = models.CharField(
@@ -163,6 +176,9 @@ class HousingTypes(models.Model):
         index_list = ['빌라', '아파트', '오피스텔', '원룸', '투쓰리룸', '복층']
         for i in range(len(index_list)):
             HousingTypes.objects.create(type=index_list[i])
+
+    def __str__(self):
+        return '%s : %s' % (self.pk, self.type)
 
 
 class Styles(models.Model):
@@ -177,6 +193,9 @@ class Styles(models.Model):
         for i in range(len(index_list)):
             Styles.objects.create(type=index_list[i])
 
+    def __str__(self):
+        return '%s : %s' % (self.pk, self.type)
+
 
 class Colors(models.Model):
     type = models.CharField(
@@ -189,6 +208,9 @@ class Colors(models.Model):
         index_list = ['빨강', '주황', '노랑', '초록', '파랑', '남색', '보라색', '검정', '흰색', '회색']
         for i in range(len(index_list)):
             Colors.objects.create(type=index_list[i])
+
+    def __str__(self):
+        return '%s : %s' % (self.pk, self.type)
 
 
 class PostImages(models.Model):

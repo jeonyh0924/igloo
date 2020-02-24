@@ -10,6 +10,7 @@ djangorestframework<3.10
 django-storages<1.8
 django-extensions<2.14
 django-nested-admin<3.2.0
+django-filter==2.2.0
 pilkit<2.1
 psycopg2-binary<2.8
 Pillow<5.4

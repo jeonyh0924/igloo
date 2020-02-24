@@ -20,8 +20,6 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
-    # relation_users = serializers.StringRelatedField(many=True, read_only=True)
-
     relation_users = serializers.StringRelatedField(many=True)
     count_followers = serializers.SerializerMethodField(read_only=True)
 

@@ -41,6 +41,7 @@ INSTALLED_APPS = [
 
     # third part package
     'django_extensions',
+    'django_filters',
     'rest_framework',
     'rest_framework.authtoken',
     # django 는 밑에서부터 위로 컴파일

@@ -18,22 +18,15 @@ User = get_user_model()
 
 
 class SignupView(generics.CreateAPIView):
-    """
-    username / password
-    2개 필드 (pk 제외, 자동으로 생성)에 대한 값을 입력하여 POST요청
-    필드값을 적절히 DB에 저장해 User Object 생성
-    """
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
-    # method for creating password hashing relation
     def perform_create(self, serializer):
         instance = serializer.save()
         instance.set_password(instance.password)
         instance.save()
 
 
-# Check Username exists APIView
 class CheckUniqueIDView(APIView):
     def post(self, request):
         # response = {}
@@ -75,10 +68,6 @@ class LogoutView(APIView):
     permission_classes = (
         permissions.IsAuthenticated,
     )
-    """
-    GET 요청으로 로그아웃 요청을 받는다
-    해당 유저(request.user)가 가진 auth_token(Token object의 related_name)을 삭제
-    """
 
     def delete(self, request):
         request.user.auth_token.delete()

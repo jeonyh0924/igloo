@@ -5,24 +5,22 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import mixins
+
+from posts.filters import PostFilter
 from .models import Posts, PostLike, Comments, Colors, Pyeong
 from .permissions import IsOwnerOrReadOnly, IsOwnerOrReadOnlyComment
 from .serializer import PostSerializer, PostLikeSerializer, CommentSerializer, PostListSerializer
 
 
-class PostsCreateView(generics.ListCreateAPIView):
+class PostsListCreateView(generics.ListCreateAPIView):
     queryset = Posts.objects.all()
     serializer_class = PostSerializer
+    # filter_class = PostFilter
     permission_classes = (
         permissions.IsAuthenticatedOrReadOnly,
     )
-
-
-class PostListView(APIView):
-    def get(self, request):
-        posts = Posts.objects.all()
-        serializer = PostListSerializer(posts, many=True)
-        return Response(serializer.data)
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['pyeong', 'colors', 'housingtype', 'style', ]
 
 
 class PostDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -37,13 +35,12 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
         return get_object_or_404(Posts, pk=self.kwargs.get("pk"))
 
 
-class PostLikeCreate(APIView):
+class PostLikeView(APIView):
     permission_classes = (
         permissions.IsAuthenticated,
     )
 
     def post(self, request, post_pk):
-        # request.data.update(post=post_pk)
         post = get_object_or_404(Posts, pk=post_pk)
         serializer = PostLikeSerializer(
             data={**request.data, 'post': post_pk, }
@@ -106,15 +103,16 @@ class PostFiltering(generics.ListAPIView):
         colors = self.request.POST['colors']
         if colors is '':
             colors = Colors.objects.all()
-        pyeong = self.request.POST['pyeong']
-        if pyeong is None:
-            pyeong = Pyeong.objects.all()
-        housingtype = self.request.POST['housingtype']
-        if housingtype is None:
-            housingtype = Pyeong.objects.all()
-        style = self.request.POST['style']
+
+        # pyeong = self.request.POST['pyeong']
+        # if pyeong is None:
+        #     pyeong = Pyeong.objects.all()
+        # housingtype = self.request.POST['housingtype']
+        # if housingtype is None:
+        #     housingtype = Pyeong.objects.all()
+        # style = self.request.POST['style']
         return Posts.objects.filter(colors=colors,
-                                    pyeong=pyeong,
-                                    housingtype=housingtype,
-                                    style=style
+                                    # pyeong=pyeong,
+                                    # housingtype=housingtype,
+                                    # style=style
                                     )
