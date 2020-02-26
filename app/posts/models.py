@@ -20,6 +20,7 @@ class Posts(models.Model):
         ('16-25', '16-25평'),
         ('26-', '그 이상'),
     )
+
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,

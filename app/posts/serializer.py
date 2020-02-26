@@ -1,4 +1,4 @@
-from rest_framework import serializers
+from rest_framework import fields, serializers
 from rest_framework.relations import StringRelatedField
 from .models import Posts, PostImages, PostLike, Comments, Pyeong, Colors, HousingTypes, Styles
 from django.contrib.auth import get_user_model

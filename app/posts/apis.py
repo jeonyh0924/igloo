@@ -20,7 +20,7 @@ class PostsListCreateView(generics.ListCreateAPIView):
         permissions.IsAuthenticatedOrReadOnly,
     )
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['pyeong', 'colors', 'housingtype', 'style', ]
+    filterset_fields = ['pyeong', 'colors', 'housingtype', 'style',]
 
 
 class PostDetail(generics.RetrieveUpdateDestroyAPIView):
