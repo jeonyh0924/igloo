@@ -28,7 +28,6 @@ class Users(AbstractUser):
         # symmetrical // https://stackoverflow.com/questions/36852324/in-django-what-does-symmetrical-true-do
         symmetrical=False,
         blank=True,
-        null=True,
     )
 
     @property

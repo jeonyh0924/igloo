@@ -55,6 +55,18 @@ class AuthTokenView(APIView):
         raise AuthenticationFailed()
 
 
+class FacebookAuthTokenView(APIView):
+    def post(self, request):
+        """
+        전달받은 토큰 값( facebook access token key)과 유저 정보(token, user)를 사용해서
+        정상적인 토큰인지 확인 후
+        디비에 해당하는 유저가 존재하는지 검사, 있다면 토큰을 주고, 없다면 유저 생성 후 토큰을 발급한다.
+        """
+        pass
+
+    pass
+
+
 class UserProfileView(APIView):
     permission_classes = (
         permissions.IsAuthenticated,

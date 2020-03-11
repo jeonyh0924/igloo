@@ -17,12 +17,17 @@ STATIC_ROOT = os.path.join(ROOT_DIR, '.static')
 
 WSGI_APPLICATION = 'config.wsgi.production.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
-DATABASES = PRODUCTION_JSON['DATABASES']
+# DATABASES = PRODUCTION_JSON['DATABASES']
 
+DATABASES = {
+     'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3')
+    }
+}
 try:
     EC2_IP = requests.get('http://169.254.169.254/latest/meta-data/local-ipv4').text
     ALLOWED_HOSTS.append(EC2_IP)

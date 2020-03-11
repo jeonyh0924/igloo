@@ -20,6 +20,7 @@ from django.contrib import admin
 from django.urls import path, include
 
 from members.urls import urlpatterns_api_members
+from members.views import facebook_login_page
 from posts.urls import urlpatterns_api_posts
 
 urlpatterns_api = ([
@@ -29,6 +30,8 @@ urlpatterns_api = ([
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(urlpatterns_api)),
+    path('login/', facebook_login_page),
+    path('members/', include(urlpatterns_api_members)),
 ]
 
 urlpatterns += static(

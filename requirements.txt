@@ -14,7 +14,6 @@ cryptography==2.8
 decorator==4.4.1
 defusedxml==0.6.0
 Django==2.1.15
-django-allauth==0.39.1
 django-appconf==1.0.3
 django-celery-beat==1.4.0
 django-celery-results==1.0.4

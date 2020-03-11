@@ -2,7 +2,7 @@
 <hr>
 
 ## Installation
-Requirements
+### Requirements
 
 Python, packages
 
@@ -13,7 +13,32 @@ Secrets
 
 ```.secrets/base.json```
 
-pycharm setting
+```python
+{
+  "SECRET_KEY": "<django secret key>",
+  "FACEBOOK_APP_ID":<Facebook app id>,
+  "FACEBOOK_APP_SECRET":"<Facebook app password>"
+}
+```
+
+```
+# .secrets/dev.json & productions.json
+{
+  "DATABASES": {
+    "default": {
+      "ENGINE": "django.db.backends.postgresql",
+      "HOST": "<rds endpoint>",
+      "NAME": "iglooDB",
+      "USER": "igloo",
+      "PASSWORD": "<rds password>",
+      "PORT": "5432"
+    }
+  }
+}
+```
+
+
+pycharm setting - 뭔지 까먹음
 
 ``` cmd + , language& frameworks -> selech Django, enable django support, Django projects root -> manage.py folder, settings-> dev settings.py``` ex> igloo settings 
 

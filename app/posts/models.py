@@ -40,7 +40,6 @@ class Posts(models.Model):
     pyeong = models.ManyToManyField(
         'Pyeong',
         blank=True,
-        null=True,
     )
     created_at = models.DateTimeField(
         '생성 날짜', auto_now_add=True,
@@ -55,23 +54,19 @@ class Posts(models.Model):
         related_name='like_posts',
         related_query_name='like_post',
         blank=True,
-        null=True,
     )
 
     colors = models.ManyToManyField(
         'posts.Colors',
         blank=True,
-        null=True,
     )
     housingtype = models.ManyToManyField(
         'HousingTypes',
         blank=True,
-        null=True,
     )
     style = models.ManyToManyField(
         'Styles',
         blank=True,
-        null=True,
     )
     postPyeong = models.CharField(max_length=10, choices=PYEONG_CHOICE_FIELD)
 

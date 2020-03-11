@@ -12,7 +12,8 @@ SECRET_DIR = os.path.join(ROOT_DIR, '.secrets')
 
 secrets = json.load(open(os.path.join(SECRET_DIR, 'base.json')))
 SECRET_KEY = secrets['SECRET_KEY']
-
+FACEBOOK_APP_ID = secrets["FACEBOOK_APP_ID"]
+FACEBOOK_APP_SECRET = secrets["FACEBOOK_APP_SECRET"]
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 MEDIA_URL = '/media/'
@@ -20,6 +21,7 @@ MEDIA_ROOT = os.path.join(ROOT_DIR, ".media")
 
 STATIC_URL = '/static/'
 
+TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
 STATICFILES_DIRS = [
     os.path.join(ROOT_DIR, '.static/admin'),
 ]
@@ -44,9 +46,8 @@ INSTALLED_APPS = [
     'django_filters',
     'rest_framework',
     'rest_framework.authtoken',
-    # django 는 밑에서부터 위로 컴파일
-    # 'drf_yasg'
 
+    # django 는 밑에서부터 위로 컴파일
 ]
 
 REST_FRAMEWORK = {
@@ -56,7 +57,6 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_PARSER_CLASSES': (
         'rest_framework.parsers.FormParser',
-        'rest_framework.parsers.MultiPartParser',
     ),
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
 }
@@ -76,7 +76,9 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            TEMPLATES_DIR,
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -89,9 +91,15 @@ TEMPLATES = [
     },
 ]
 
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',  # <- 디폴트 모델 백엔드
+    'members.backends.FacebookBackend',
+
+)
+
+SITE_ID = 1  # 사이트 아이디 기본값
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',

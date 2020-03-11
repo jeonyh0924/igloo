@@ -20,4 +20,5 @@ urlpatterns_api_members = [
     path('myProfile/', apis.MyProfileView.as_view()),
     path('myPostLikeList/', apis.PostLIkeListView.as_view()),
     path('relationship/', apis.FollowUserView.as_view()),
+    path('facebook-login/', views.facebook_login, name='facebook-login'),
 ]
