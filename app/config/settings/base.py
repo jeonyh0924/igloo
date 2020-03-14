@@ -4,7 +4,7 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 ROOT_DIR = os.path.dirname(BASE_DIR)
-STATIC_DIR = os.path.join(BASE_DIR, '.static')
+STATIC_DIR = os.path.join(ROOT_DIR, '.static')
 SECRET_DIR = os.path.join(ROOT_DIR, '.secrets')
 
 # Quick-start development settings - unsuitable for production
@@ -29,10 +29,19 @@ STATICFILES_DIRS = [
 # Auth
 AUTH_USER_MODEL = 'members.Users'
 
+INTERNAL_IPS = [
+    '127.0.0.1',
+]
+
+
 INSTALLED_APPS = [
     # apps
     'members',
     'posts.apps.PostsConfig',
+
+    # django sslserver
+    'sslserver',
+    'debug_toolbar',
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -62,6 +71,8 @@ REST_FRAMEWORK = {
 }
 
 MIDDLEWARE = [
+    'config.middleware.CORSMiddleware',
+
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -69,6 +80,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
+
 ]
 
 ROOT_URLCONF = 'config.urls'
