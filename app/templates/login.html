@@ -9,12 +9,17 @@
 </head>
 <body>
 {% if user.is_authenticated %}
-username : {{user.username}}
+    username : {{ user.username }}
 {% endif %}
 <br>
 <a href="https://www.facebook.com/v6.0/dialog/oauth?
 client_id=518530512380873
 &redirect_uri=http://localhost:8000/members/facebook-login/"
    class="btn-block btn btn-primary">facebook login</a>
+
+<a href="https://kauth.kakao.com/oauth/authorize?
+client_id=c5fe0d7cf28e7714d8f01200f604a03b&
+redirect_uri=http://localhost:8000/members/kakao-login/&
+response_type=code">kakao login</a>
 </body>
 </html>

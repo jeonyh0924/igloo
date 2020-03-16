@@ -7,6 +7,7 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from members.backends import FacebookBackend
 from members.models import Relations
 from members.permissions import IsOwnerOrReadOnly
 from posts.models import PostLike
@@ -58,13 +59,25 @@ class AuthTokenView(APIView):
 class FacebookAuthTokenView(APIView):
     def post(self, request):
         """
-        전달받은 토큰 값( facebook access token key)과 유저 정보(token, user)를 사용해서
-        정상적인 토큰인지 확인 후
-        디비에 해당하는 유저가 존재하는지 검사, 있다면 토큰을 주고, 없다면 유저 생성 후 토큰을 발급한다.
+        전달받은 토큰(페이스북 access_token 값과 유저 ID( access_token, user_id)를 이용
+        정상적인 토큰인지 검사 후 ( access_token 으로 받아온 정보 id와 user_id 검사)
+        DB에 해당하는 유저가 있는지 검사 ,
+         있다면 토큰 발급
+         없다면 유저 생성 후 토큰 발급 생성 로직은 facebookBackend 참고
         """
-        pass
-
-    pass
+        return Response(request.data)
+        # facebook_user_id = request.data.get('user_id')
+        # access_token = request.data.get('access_token')
+        # if User.objects.filter(username=facebook_user_id).exists():
+        #     user = User.objects.get(username=facebook_user_id)
+        # else:
+        #     user = FacebookBackend.get_user_by_access_token(access_token)
+        # token = Token.objects.get_or_create(user=user)[0]
+        # data = {
+        #     'token': token.key,
+        #     'user': UserSerializer(user).data,
+        # }
+        # return Response(data)
 
 
 class UserProfileView(APIView):

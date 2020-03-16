@@ -9,23 +9,11 @@ User = get_user_model()
 
 
 class FacebookBackend:
-    def authenticate(self, request, facebook_request_token):
-        api_base = 'https://graph.facebook.com/v6.0'
-        api_get_access_token = f'{api_base}/oauth/access_token?'
-        api_me = f'{api_base}/me'
+    api_base = 'https://graph.facebook.com/v3.2'
+    api_get_access_token = f'{api_base}/oauth/access_token'
+    api_me = f'{api_base}/me'
 
-        code = facebook_request_token
-
-        params = {
-            'client_id': settings.FACEBOOK_APP_ID,
-            'redirect_uri': 'http://localhost:8000/members/facebook-login/',
-            'client_secret': settings.FACEBOOK_APP_SECRET,
-            'code': code,
-        }
-        response = requests.get(api_get_access_token, params)
-        data = response.json()
-        access_token = data['access_token']
-
+    def get_user_by_access_token(self, access_token):
         params = {
             'access_token': access_token,
             'fields': ','.join([
@@ -35,7 +23,7 @@ class FacebookBackend:
                 'picture.type(large)',
             ])
         }
-        response = requests.get(api_me, params)
+        response = requests.get(self.api_me, params)
         data = response.json()
 
         facebook_id = data['id']
@@ -67,6 +55,25 @@ class FacebookBackend:
                 img_profile=f,
             )
         return user
+
+    def authenticate(self, request, facebook_request_token):
+        # 페이스북으로부터 받아온 request token
+        code = facebook_request_token
+
+        # request token을 access token으로 교환
+        params = {
+            'client_id': settings.FACEBOOK_APP_ID,
+            'redirect_uri': 'http://localhost:8000/members/facebook-login/',
+            'client_secret': settings.FACEBOOK_APP_SECRET,
+            'code': code,
+        }
+        response = requests.get(self.api_get_access_token, params)
+        # 인수로 전달한 문자열이 'JSON'형식일 것으로 생각
+        # json.loads는 전달한 문자열이 JSON형식일 경우, 해당 문자열을 parsing해서 파이썬 Object를 리턴함
+        # response_object = json.loads(response.text)
+        data = response.json()
+        access_token = data['access_token']
+        self.get_user_by_access_token(access_token)
 
     def get_user(self, user_id):
         try:

@@ -2,6 +2,7 @@ import imghdr
 import requests
 from django.contrib.auth import get_user_model, login, authenticate
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from rest_framework.response import Response
 # Create your views here.
@@ -71,3 +72,20 @@ def facebook_login(request):
         }
         return render(request, 'login.html', context)
     return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+def kakao_login(request):
+    kakao_access_code = request.GET.get('code')
+    url = 'https://kauth.kakao.com/oauth/token'
+    headers = {
+        'Content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+    }
+    body = {
+        'grant_type': 'authorization_code',
+        'client_id': 'c5fe0d7cf28e7714d8f01200f604a03b',
+        'redirect_url': 'http://localhost:8000/members/kakao-login/',
+        'code': kakao_access_code
+    }
+    kakao_reponse = requests.post(url, headers=headers, data=body)
+    #  front 에서 받아야 할 역할 완료 / 
+    return HttpResponse(kakao_reponse.text)

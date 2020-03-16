@@ -21,4 +21,6 @@ urlpatterns_api_members = [
     path('myPostLikeList/', apis.PostLIkeListView.as_view()),
     path('relationship/', apis.FollowUserView.as_view()),
     path('facebook-login/', views.facebook_login, name='facebook-login'),
+    path('kakao-login/', views.kakao_login, name='kakao-login'),
+    path('auth-token/facebook/', apis.FacebookAuthTokenView.as_view()),
 ]

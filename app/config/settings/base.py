@@ -29,19 +29,20 @@ STATICFILES_DIRS = [
 # Auth
 AUTH_USER_MODEL = 'members.Users'
 
+#  django deeg toolbar
 INTERNAL_IPS = [
     '127.0.0.1',
 ]
 
 
+CORS_ORIGIN_WHITELIST = (
+    '127.0.0.1',
+    'localhost:3004',
+)
 INSTALLED_APPS = [
     # apps
     'members',
     'posts.apps.PostsConfig',
-
-    # django sslserver
-    'sslserver',
-    'debug_toolbar',
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -52,7 +53,10 @@ INSTALLED_APPS = [
 
     # third part package
     'django_extensions',
+    'corsheaders',
+    'debug_toolbar',
     'django_filters',
+    'sslserver',
     'rest_framework',
     'rest_framework.authtoken',
 
@@ -71,8 +75,9 @@ REST_FRAMEWORK = {
 }
 
 MIDDLEWARE = [
-    'config.middleware.CORSMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 
+    # 'config.middleware.CORSMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
