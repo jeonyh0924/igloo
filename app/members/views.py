@@ -10,6 +10,7 @@ from rest_framework import viewsets, permissions, status
 from rest_framework.views import APIView
 
 from config import settings
+from config.settings.base import KAKAO_APP_ID
 from .models import Users
 from .serializers import UserProfileSerializer, ChangePasswordSerializer
 from .permissions import IsOwnerOrReadOnly
@@ -82,10 +83,30 @@ def kakao_login(request):
     }
     body = {
         'grant_type': 'authorization_code',
-        'client_id': 'c5fe0d7cf28e7714d8f01200f604a03b',
+        'client_id': KAKAO_APP_ID,
         'redirect_url': 'http://localhost:8000/members/kakao-login/',
         'code': kakao_access_code
     }
     kakao_reponse = requests.post(url, headers=headers, data=body)
-    #  front 에서 받아야 할 역할 완료 / 
-    return HttpResponse(kakao_reponse.text)
+    #  front 에서 받아야 할 역할 완료 /
+    data = kakao_reponse.json()
+    access_token = data['access_token']
+
+    url = 'https://kapi.kakao.com/v2/user/me'
+
+    headers = {
+        'Authorization': f'Bearer {access_token}',
+        'Content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+    }
+    kakao_response =requests.post(url, headers=headers)
+
+    user_data = kakao_response.json()
+    kakao_user_id = user_data['id']
+    user_username = user_data['properties']['nickname']
+    kakao_user_image = user_data['properties']['profile_image']
+    img_response = requests.get(kakao_user_image)
+    img_data = img_response.content
+    ext = imghdr.what('', h=img_data)
+    f = SimpleUploadedFile(f'{kakao_user_id}.{ext}', img_response.content)
+
+    return HttpResponse(kakao_response)

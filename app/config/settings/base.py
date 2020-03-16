@@ -12,8 +12,11 @@ SECRET_DIR = os.path.join(ROOT_DIR, '.secrets')
 
 secrets = json.load(open(os.path.join(SECRET_DIR, 'base.json')))
 SECRET_KEY = secrets['SECRET_KEY']
+
+# social login secret key - .secret
 FACEBOOK_APP_ID = secrets["FACEBOOK_APP_ID"]
 FACEBOOK_APP_SECRET = secrets["FACEBOOK_APP_SECRET"]
+KAKAO_APP_ID = secrets['KAKAO_APP_ID']
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 MEDIA_URL = '/media/'
