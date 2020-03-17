@@ -23,4 +23,5 @@ urlpatterns_api_members = [
     path('facebook-login/', views.facebook_login, name='facebook-login'),
     path('kakao-login/', views.kakao_login, name='kakao-login'),
     path('auth-token/facebook/', apis.FacebookAuthTokenView.as_view()),
+    path('django-logout/', views.user_logout, name='django-logout'),
 ]

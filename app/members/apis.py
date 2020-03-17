@@ -65,19 +65,19 @@ class FacebookAuthTokenView(APIView):
          있다면 토큰 발급
          없다면 유저 생성 후 토큰 발급 생성 로직은 facebookBackend 참고
         """
-        return Response(request.data)
-        # facebook_user_id = request.data.get('user_id')
-        # access_token = request.data.get('access_token')
-        # if User.objects.filter(username=facebook_user_id).exists():
-        #     user = User.objects.get(username=facebook_user_id)
-        # else:
-        #     user = FacebookBackend.get_user_by_access_token(access_token)
-        # token = Token.objects.get_or_create(user=user)[0]
-        # data = {
-        #     'token': token.key,
-        #     'user': UserSerializer(user).data,
-        # }
-        # return Response(data)
+        # return Response(request.data)
+        facebook_user_id = request.data.get('user_id')
+        access_token = request.data.get('access_token')
+        if User.objects.filter(username=facebook_user_id).exists():
+            user = User.objects.get(username=facebook_user_id)
+        else:
+            user = FacebookBackend.get_user_by_access_token(access_token)
+        token = Token.objects.get_or_create(user=user)[0]
+        data = {
+            'token': token.key,
+            'user': UserSerializer(user).data,
+        }
+        return Response(data)
 
 
 class UserProfileView(APIView):

@@ -30,7 +30,7 @@ urlpatterns_api = ([
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(urlpatterns_api)),
-    path('login/', facebook_login_page),
+    path('login/', facebook_login_page, name='login-page'),
     path('members/', include(urlpatterns_api_members)),
 ]
 

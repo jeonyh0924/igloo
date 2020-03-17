@@ -1,6 +1,6 @@
 import imghdr
 import requests
-from django.contrib.auth import get_user_model, login, authenticate
+from django.contrib.auth import get_user_model, login, authenticate, logout
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
@@ -16,6 +16,11 @@ from .serializers import UserProfileSerializer, ChangePasswordSerializer
 from .permissions import IsOwnerOrReadOnly
 
 User = get_user_model()
+
+
+def user_logout(request):
+    logout(request)
+    return redirect('login-page')
 
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
@@ -98,15 +103,32 @@ def kakao_login(request):
         'Authorization': f'Bearer {access_token}',
         'Content-type': 'application/x-www-form-urlencoded;charset=utf-8'
     }
-    kakao_response =requests.post(url, headers=headers)
+    kakao_response = requests.post(url, headers=headers)
 
     user_data = kakao_response.json()
     kakao_user_id = user_data['id']
     user_username = user_data['properties']['nickname']
+    print(type(user_username))
+    user_first_name = user_username[0]
+    user_last_name = user_username[1:]
+
     kakao_user_image = user_data['properties']['profile_image']
     img_response = requests.get(kakao_user_image)
     img_data = img_response.content
     ext = imghdr.what('', h=img_data)
     f = SimpleUploadedFile(f'{kakao_user_id}.{ext}', img_response.content)
 
-    return HttpResponse(kakao_response)
+    try:
+        user = User.objects.get(username=kakao_user_id)
+        first_name = user_first_name
+        last_name = user_last_name
+        user.save()
+    except User.DoesNotExist:
+        user = User.objects.create_user(
+            username=kakao_user_id,
+            first_name=user_first_name,
+            last_name=user_last_name,
+            img_profile=f,
+        )
+
+    return HttpResponse(user)

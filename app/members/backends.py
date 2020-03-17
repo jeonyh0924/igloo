@@ -38,7 +38,7 @@ class FacebookBackend:
         # f = io.ByteIO(img_response.content)
 
         # FileField가 지원하는 InMemoryUploadedFile 객체를 사용하기,
-        # imghdr 모듈을 사용해서 페이스북에서 받은 파일 확장자를 확인
+            # imghdr 모듈을 사용해서 페이스북에서 받은 파일 확장자를 확인
         ext = imghdr.what('', h=img_data)
         f = SimpleUploadedFile(f'{facebook_id}.{ext}', img_response.content)
 
