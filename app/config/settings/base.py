@@ -1,4 +1,5 @@
 # import json
+import datetime
 import json
 import os
 
@@ -37,7 +38,6 @@ INTERNAL_IPS = [
     '127.0.0.1',
 ]
 
-
 CORS_ORIGIN_WHITELIST = (
     '127.0.0.1',
     'localhost:3004',
@@ -66,8 +66,25 @@ INSTALLED_APPS = [
     # django 는 밑에서부터 위로 컴파일
 ]
 
+
+JWT_AUTH = {
+    'JWT_SECRET_KEY': SECRET_KEY,
+    'JWT_ALGORITHM': 'HS256',
+    # JWT 검증 시, 만료 기간을 확인
+    'JWT_VERIFY_EXPIRATION': True,
+    'JWT_ALLOW_REFRESH': True,
+    # access token 만료 기간 설정 7일이 지나면 만료
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=7),
+    # refresh token 만료 기간 28일 설정, Access token이 만료 되기 전까지 계속하여 갱신이 가능하지만, 28일이 지나면 갱신 불가.
+    'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=28),
+}
+
 REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.TokenAuthentication',
     ),

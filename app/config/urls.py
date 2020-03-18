@@ -18,6 +18,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
+from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token, verify_jwt_token
 
 from members.urls import urlpatterns_api_members
 from members.views import facebook_login_page
@@ -28,6 +29,9 @@ urlpatterns_api = ([
                        path('posts/', include(urlpatterns_api_posts)),
                    ], 'api')
 urlpatterns = [
+    path('api/token/', obtain_jwt_token),  # jwt Token get it
+    path('api/token/refresh/', refresh_jwt_token),  # jwt Token refresh
+    path('api/token/verify/', verify_jwt_token),  # jwt Token verify
     path('admin/', admin.site.urls),
     path('api/', include(urlpatterns_api)),
     path('login/', facebook_login_page, name='login-page'),

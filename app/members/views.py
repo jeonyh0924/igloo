@@ -1,4 +1,6 @@
 import imghdr
+
+import jwt
 import requests
 from django.contrib.auth import get_user_model, login, authenticate, logout
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -10,7 +12,7 @@ from rest_framework import viewsets, permissions, status
 from rest_framework.views import APIView
 from django.conf import settings
 
-from config.settings.base import KAKAO_APP_ID
+from config.settings.base import KAKAO_APP_ID, SECRET_KEY
 from .models import Users
 from .serializers import UserProfileSerializer, ChangePasswordSerializer
 from .permissions import IsOwnerOrReadOnly
@@ -121,6 +123,9 @@ def facebook_login(request):
     ext = imghdr.what('', h=img_data)
     f = SimpleUploadedFile(f'{facebook_id}.{ext}', img_response.content)
 
+    jwt_token = jwt.encode({'id': facebook_id}, SECRET_KEY, algorithm='HS256').decode('utf-8')
+
+
     try:
         user = User.objects.get(username=facebook_id)
         user.last_name = last_name
@@ -134,7 +139,7 @@ def facebook_login(request):
             img_profile=f,
         )
     login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-    return redirect('login-page')
+    return HttpResponse(f'id: {facebook_id}, jwt: {jwt_token}')
 
     # return user
     #
@@ -172,7 +177,7 @@ def kakao_login(request):
     kakao_response = requests.post(url, headers=headers)
 
     user_data = kakao_response.json()
-    kakao_user_id = user_data['id']
+    kakao_id = user_data['id']
     user_username = user_data['properties']['nickname']
     print(type(user_username))
     user_first_name = user_username[0]
@@ -184,18 +189,21 @@ def kakao_login(request):
     ext = imghdr.what('', h=img_data)
     f = SimpleUploadedFile(f'{kakao_user_id}.{ext}', img_response.content)
 
+    jwt_token = jwt.encode({'id': kakao_id}, SECRET_KEY, algorithm='HS256').decode('utf-8')
+
     try:
-        user = User.objects.get(username=kakao_user_id)
+        user = User.objects.get(username=kakao_id)
         first_name = user_first_name
         last_name = user_last_name
         user.save()
     except User.DoesNotExist:
         user = User.objects.create_user(
-            username=kakao_user_id,
+            username=kakao_id,
             first_name=user_first_name,
             last_name=user_last_name,
             img_profile=f,
         )
 
     login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-    return redirect('login-page')
+    # return redirect('login-page')
+    return HttpResponse(f'id: {kakao_id}, token:{jwt_token}')
