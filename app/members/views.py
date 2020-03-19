@@ -123,8 +123,7 @@ def facebook_login(request):
     ext = imghdr.what('', h=img_data)
     f = SimpleUploadedFile(f'{facebook_id}.{ext}', img_response.content)
 
-    jwt_token = jwt.encode({'id': facebook_id}, SECRET_KEY, algorithm='HS256').decode('utf-8')
-
+    jwt_token = jwt.encode({'username': facebook_id}, SECRET_KEY, algorithm='HS256').decode('utf-8')
 
     try:
         user = User.objects.get(username=facebook_id)
@@ -138,6 +137,7 @@ def facebook_login(request):
             last_name=last_name,
             img_profile=f,
         )
+    print(jwt_token)
     login(request, user, backend='django.contrib.auth.backends.ModelBackend')
     return HttpResponse(f'id: {facebook_id}, jwt: {jwt_token}')
 
@@ -180,16 +180,16 @@ def kakao_login(request):
     kakao_id = user_data['id']
     user_username = user_data['properties']['nickname']
     print(type(user_username))
-    user_first_name = user_username[0]
-    user_last_name = user_username[1:]
+    user_first_name = user_username[1:]
+    user_last_name = user_username[0]
 
     kakao_user_image = user_data['properties']['profile_image']
     img_response = requests.get(kakao_user_image)
     img_data = img_response.content
     ext = imghdr.what('', h=img_data)
-    f = SimpleUploadedFile(f'{kakao_user_id}.{ext}', img_response.content)
+    f = SimpleUploadedFile(f'{kakao_id}.{ext}', img_response.content)
 
-    jwt_token = jwt.encode({'id': kakao_id}, SECRET_KEY, algorithm='HS256').decode('utf-8')
+    jwt_token = jwt.encode({'id': kakao_id, 'username': kakao_id, }, SECRET_KEY, algorithm='HS256').decode('UTF-8')
 
     try:
         user = User.objects.get(username=kakao_id)
@@ -206,4 +206,4 @@ def kakao_login(request):
 
     login(request, user, backend='django.contrib.auth.backends.ModelBackend')
     # return redirect('login-page')
-    return HttpResponse(f'id: {kakao_id}, token:{jwt_token}')
+    return HttpResponse(f'username: {kakao_id} token:{jwt_token}')
