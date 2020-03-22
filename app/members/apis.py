@@ -1,3 +1,5 @@
+import jwt
+import requests
 from django.contrib.auth import get_user_model, authenticate
 from django.utils import timezone
 from rest_framework import generics, status, permissions
@@ -7,6 +9,7 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from config.settings.base import SECRET_KEY
 from members.backends import FacebookBackend
 from members.models import Relations
 from members.permissions import IsOwnerOrReadOnly
@@ -171,7 +174,6 @@ class FollowingView(APIView):
 class MyProfileView(APIView):
     permission_classes = (
         permissions.IsAuthenticated,
-        IsOwnerOrReadOnly,
     )
 
     def get(self, request):
@@ -199,3 +201,40 @@ class PostLIkeListView(APIView):
         serializer = PostLikeListSerializer(post_list, many=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class KakaoJwtTokenView(APIView):
+    def post(self, request):
+        access_token = request.POST.get('access_token')
+
+        url = 'https://kapi.kakao.com/v2/user/me'
+
+        headers = {
+            'Authorization': f'Bearer {access_token}',
+            'Content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+        }
+        kakao_response = requests.post(url, headers=headers)
+
+        user_data = kakao_response.json()
+        kakao_id = user_data['id']
+        user_username = user_data['properties']['nickname']
+        user_first_name = user_username[1:]
+        user_last_name = user_username[0]
+
+        jwt_token = jwt.encode({'username': kakao_id}, SECRET_KEY, algorithm='HS256').decode('UTF-8')
+
+        try:
+            user = User.objects.get(username=kakao_id)
+
+        except User.DoesNotExist:
+            user = User.objects.create_user(
+                username=kakao_id,
+                first_name=user_first_name,
+                last_name=user_last_name,
+            )
+        data = {
+            'token': jwt_token,
+            'user': UserSerializer(user).data,
+        }
+
+        return Response(data)
