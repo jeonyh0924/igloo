@@ -1,6 +1,6 @@
 boto3<1.10
 celery<4.3.0
-Django<2.2
+Django<2.3
 django-allauth < 0.39.2
 django-crontab<0.7.2
 django-cors-headers<2.5.0
